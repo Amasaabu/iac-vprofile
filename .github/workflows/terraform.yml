@@ -57,3 +57,24 @@ jobs:
       - name: Terraform plan status
         if: steps.plan.outcome == 'false'
         run: exit 1
+
+      - name: Terraform Apply
+        id: apple
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false -parallelism=1 planfile
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-2
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: ${{env.AWS_REGION}}
+
+      - name: Get Kube config file
+        id: getconfig
+        run: aws eks update-kubeconfig --region ${{env.AWS_REGION}} --name ${{env.EKS_CLUSTER}}
+      
+      - name: Install INgress COntroller
+        if: steps.apple.outcome == 'success' &&steps.getconfig.outcome == 'success'
+        run: 'https://raw.githubusercontent.com/kubernetes/ingress-nginix/controller-v1.1.3'
