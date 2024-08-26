@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Terraform with specified version number
-        uses: harshicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v2
         # with:
         #   terraform_version: 1.6.3
 
@@ -48,10 +48,6 @@ jobs:
       - name : Terraform validate
         id: validate
         run: terraform validate
-
-      - name: Terraform plan
-        id: plan
-        run: terraform plan
 
       - name: Terraform plan
         id: plan
