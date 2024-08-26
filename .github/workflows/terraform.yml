@@ -4,7 +4,7 @@ on:
     branches:
      - main
      - stage
-    paths: 
+    paths:
       - terraform/**
   pull_request:
     branches:
